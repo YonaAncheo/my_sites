@@ -29,3 +29,26 @@ function createBtn(text, className) {
   return btn;
 }
 
+// Delete and EDIT tasks.
+
+taskUl.addEventListener('click', (event) => {
+  if (event.target.classList.contains('del-btn')) {
+    deleteTask(event.target.parentElement);
+  } else if (event.target.classList.contains('edit-btn')){
+    console.log(event.target);
+    editTask(event.target.parentElement);
+  }
+})
+
+function deleteTask(taskItem) {
+  if(confirm('Are you sure to delete task?')){
+    taskItem.remove();
+  }
+}
+
+function editTask(taskItem) {
+  const newTask = prompt('Edita la tarea:', taskItem.firstChild.textContent);
+  if (newTask) {
+    taskItem.firstChild.textContent = newTask;
+  }
+}
