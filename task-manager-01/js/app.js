@@ -2,7 +2,8 @@ const taskForm = document.getElementById('task-form');
 const taskUl = document.getElementById('task-list');
 
 // ADD task
-// I need to add action listener to my form.
+// With this function, when I submit my form, it adds the task to the "ul" 
+// list and creates a task in the database using a POST request.
 taskForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
@@ -12,14 +13,13 @@ taskForm.addEventListener('submit', (event) => {
   if (task) {
     newTask = taskLi(task);
     taskUl.append(newTask);
-    // here I need to add the function to send the post
-    //console.log(newTask.firstChild.textContent);
     postTask(newTask.id, newTask.firstChild.textContent)
     taskInput.value = '';
   }
   
 })
 
+// This function creates the "li" element to add to the "ul" section
 function taskLi(task) {
   const li = document.createElement('li');
   li.textContent = task;
@@ -33,6 +33,7 @@ function taskLi(task) {
   return li;
 }
 
+// This function creates the "button" element to add to the "li" section
 function createBtn(text, className) {
   const btn = document.createElement('button');
   btn.textContent = text;
@@ -123,3 +124,26 @@ async function deleteFetch(idTask) {
 }
 
 getAllTask();
+
+// Toogle for page theme using the localStorage.
+
+const themeToogleBtn = document.getElementById('toggle-theme-btn');
+const currentTheme = localStorage.getItem('theme');
+
+if( currentTheme === 'dark') {
+  document.body.className='dark-theme';
+}
+
+themeToogleBtn.addEventListener('click', () => {
+  theme = localStorage.getItem('theme');
+  //console.log(theme);
+  if (theme === 'light' || theme === null) {
+    //console.log('true');
+    localStorage.setItem('theme','dark');
+    document.body.className='dark-theme';
+  } else {
+    //console.log('false');
+    localStorage.setItem('theme','light');
+    document.body.className='light-theme';
+  }
+})
