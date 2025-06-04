@@ -1,0 +1,2 @@
+board = document.querySelector("#board");
+
