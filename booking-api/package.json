@@ -1,0 +1,15 @@
+{
+  "name": "booking-api",
+  "version": "1.0.0",
+  "description": "nodejs example",
+  "license": "MIT",
+  "author": "Yonathan Ancheo <j.ancheo.gonzalez@gmail.com>",
+  "type": "yes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
