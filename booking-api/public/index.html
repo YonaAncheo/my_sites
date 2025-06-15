@@ -3,10 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <title>Reserva de Hoteles</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f8fa;
+      margin: 40px;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    form, select, ul {
+      margin-top: 20px;
+    }
+
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #ecf0f1;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .pagination {
+      margin-top: 10px;
+    }
+
+    .pagination button {
+      margin-right: 5px;
+    }
+
+    #modalConfirm {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #modalBox {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #modalBox h3 {
+      margin-bottom: 10px;
+    }
+
+    #modalBox button {
+      margin: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>Reservas</h1>
   <ul id="reservas"></ul>
+  <div class="pagination">
+    <button id="prevPage">Anterior</button>
+    <button id="nextPage">Siguiente</button>
+  </div>
 
   <h2>Nueva reserva</h2>
   <form id="formulario">
@@ -17,20 +101,85 @@
     <button type="submit">Reservar</button>
   </form>
 
+  <h2>Editar Reserva</h2>
+  <select id="selectReserva">
+    <option value="">Selecciona una reserva</option>
+  </select>
+
+  <form id="formEditar" style="display:none;">
+    <input type="text" id="editHotel" placeholder="Hotel" required />
+    <input type="text" id="editCliente" placeholder="Cliente" required />
+    <input type="date" id="editEntrada" required />
+    <input type="date" id="editSalida" required />
+    <button type="submit">Actualizar Reserva</button>
+  </form>
+
+  <!-- Modal de Confirmación -->
+  <div id="modalConfirm">
+    <div id="modalBox">
+      <h3>¿Estás seguro de actualizar esta reserva?</h3>
+      <p id="resumenReserva"></p>
+      <button id="btnConfirmar">Sí, actualizar</button>
+      <button id="btnCancelar">Cancelar</button>
+    </div>
+  </div>
+
   <script>
-    // Mostrar reservas existentes
+    let reservas = [];
+    let paginaActual = 1;
+    const porPagina = 3;
+
+    function renderizarReservas() {
+      const ul = document.getElementById('reservas');
+      ul.innerHTML = '';
+
+      const inicio = (paginaActual - 1) * porPagina;
+      const fin = inicio + porPagina;
+      const pagina = reservas.slice(inicio, fin);
+
+      pagina.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = `${r.id} - ${r.hotel} - ${r.cliente} (${r.fechaEntrada} a ${r.fechaSalida})`;
+        ul.appendChild(li);
+      });
+    }
+
+    function actualizarSelect() {
+      const select = document.getElementById('selectReserva');
+      reservas.forEach(r => {
+        const option = document.createElement('option');
+        option.value = r.id;
+        option.textContent = `${r.cliente} en ${r.hotel}`;
+        option.dataset.hotel = r.hotel;
+        option.dataset.cliente = r.cliente;
+        option.dataset.fechaEntrada = r.fechaEntrada;
+        option.dataset.fechaSalida = r.fechaSalida;
+        select.appendChild(option);
+      });
+    }
+
     fetch('/api/reservations')
       .then(res => res.json())
       .then(data => {
-        const ul = document.getElementById('reservas');
-        data.forEach(r => {
-          const li = document.createElement('li');
-          li.textContent = `${r.hotel} - ${r.cliente} (${r.fechaEntrada} a ${r.fechaSalida})`;
-          ul.appendChild(li);
-        });
+        reservas = data;
+        renderizarReservas();
+        actualizarSelect();
       });
 
-    // Crear nueva reserva
+    document.getElementById('prevPage').addEventListener('click', () => {
+      if (paginaActual > 1) {
+        paginaActual--;
+        renderizarReservas();
+      }
+    });
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+      if (paginaActual * porPagina < reservas.length) {
+        paginaActual++;
+        renderizarReservas();
+      }
+    });
+
     document.getElementById('formulario').addEventListener('submit', async e => {
       e.preventDefault();
       const reserva = {
@@ -48,7 +197,65 @@
 
       const nueva = await res.json();
       alert('Reserva creada con ID: ' + nueva.id);
-      location.reload(); // para ver la nueva reserva
+      location.reload();
+    });
+
+    document.getElementById('selectReserva').addEventListener('change', function () {
+      const selected = this.options[this.selectedIndex];
+      if (!selected.value) {
+        document.getElementById('formEditar').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('editHotel').value = selected.dataset.hotel;
+      document.getElementById('editCliente').value = selected.dataset.cliente;
+      document.getElementById('editEntrada').value = selected.dataset.fechaEntrada;
+      document.getElementById('editSalida').value = selected.dataset.fechaSalida;
+      document.getElementById('formEditar').style.display = 'block';
+    });
+
+    let datosTemporales = null;
+
+    document.getElementById('formEditar').addEventListener('submit', e => {
+      e.preventDefault();
+      const id = document.getElementById('selectReserva').value;
+      datosTemporales = {
+        id,
+        hotel: document.getElementById('editHotel').value,
+        cliente: document.getElementById('editCliente').value,
+        fechaEntrada: document.getElementById('editEntrada').value,
+        fechaSalida: document.getElementById('editSalida').value
+      };
+
+      document.getElementById('resumenReserva').textContent = `${datosTemporales.cliente} en ${datosTemporales.hotel} (${datosTemporales.fechaEntrada} - ${datosTemporales.fechaSalida})`;
+      document.getElementById('modalConfirm').style.display = 'flex';
+    });
+
+    document.getElementById('btnCancelar').addEventListener('click', () => {
+      datosTemporales = null;
+      document.getElementById('modalConfirm').style.display = 'none';
+    });
+
+    document.getElementById('btnConfirmar').addEventListener('click', async () => {
+      const res = await fetch('/api/reservations/' + datosTemporales.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          hotel: datosTemporales.hotel,
+          cliente: datosTemporales.cliente,
+          fechaEntrada: datosTemporales.fechaEntrada,
+          fechaSalida: datosTemporales.fechaSalida
+        })
+      });
+
+      document.getElementById('modalConfirm').style.display = 'none';
+
+      if (res.ok) {
+        alert('Reserva actualizada correctamente');
+        location.reload();
+      } else {
+        alert('Error al actualizar');
+      }
     });
   </script>
 </body>
