@@ -1,0 +1,4 @@
+[
+  { "id": 1, "nombre": "Hotel Estrella", "ciudad": "Santiago" },
+  { "id": 2, "nombre": "Hotel Sol", "ciudad": "Valparaíso" }
+]

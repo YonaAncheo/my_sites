@@ -1,0 +1,5 @@
+[
+  { "id": 1, "hotel_id": 1, "tipo": "Doble", "precio": 50000 },
+  { "id": 2, "hotel_id": 1, "tipo": "Suite", "precio": 80000 },
+  { "id": 3, "hotel_id": 2, "tipo": "Individual", "precio": 40000 }
+]

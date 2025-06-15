@@ -1,29 +1,9 @@
 [
   {
-    "id": 1749960199893,
-    "hotel": "Dino",
-    "cliente": "Yona",
-    "fechaEntrada": "2025-09-26",
-    "fechaSalida": "2025-07-28"
-  },
-  {
-    "id": 1750021056277,
-    "hotel": "Prat",
-    "cliente": "Joan",
-    "fechaEntrada": "2025-06-17",
-    "fechaSalida": "2025-06-20"
-  },
-  {
-    "id": 1750021134178,
-    "hotel": "Montt",
-    "cliente": "Santiago",
-    "fechaEntrada": "2025-06-24",
-    "fechaSalida": "2025-06-26"
-  },
-  {
-    "id": 1750021151896,
-    "hotel": "Dino",
-    "cliente": "Juan",
+    "id": 1,
+    "hotel_id": 1,
+    "hotel": "Hotel Estrella",
+    "cliente": "Juan Pérez",
     "fechaEntrada": "2025-06-15",
     "fechaSalida": "2025-06-17"
   }
