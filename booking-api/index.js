@@ -2,13 +2,16 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+
 const reservationsRouter = require('./routes/reservations');
 
 app.use(express.json()); // aceptar JSON
 
 // Punto de entrada para SPA
+app.use(express.static('public')); 
+
 app.get('/', (req, res) => {
-  res.json({ message: 'Bienvenido a la plataforma de reservas de hoteles SPA' });
+  res.sendFile(__dirname + '/public/index.html');
 });
 
 // Rutas de reservas

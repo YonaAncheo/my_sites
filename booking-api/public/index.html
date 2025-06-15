@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserva de Hoteles</title>
+</head>
+<body>
+  <h1>Reservas</h1>
+  <ul id="reservas"></ul>
+
+  <h2>Nueva reserva</h2>
+  <form id="formulario">
+    <input type="text" id="hotel" placeholder="Hotel" required />
+    <input type="text" id="cliente" placeholder="Cliente" required />
+    <input type="date" id="entrada" required />
+    <input type="date" id="salida" required />
+    <button type="submit">Reservar</button>
+  </form>
+
+  <script>
+    // Mostrar reservas existentes
+    fetch('/api/reservations')
+      .then(res => res.json())
+      .then(data => {
+        const ul = document.getElementById('reservas');
+        data.forEach(r => {
+          const li = document.createElement('li');
+          li.textContent = `${r.hotel} - ${r.cliente} (${r.fechaEntrada} a ${r.fechaSalida})`;
+          ul.appendChild(li);
+        });
+      });
+
+    // Crear nueva reserva
+    document.getElementById('formulario').addEventListener('submit', async e => {
+      e.preventDefault();
+      const reserva = {
+        hotel: document.getElementById('hotel').value,
+        cliente: document.getElementById('cliente').value,
+        fechaEntrada: document.getElementById('entrada').value,
+        fechaSalida: document.getElementById('salida').value
+      };
+
+      const res = await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reserva)
+      });
+
+      const nueva = await res.json();
+      alert('Reserva creada con ID: ' + nueva.id);
+      location.reload(); // para ver la nueva reserva
+    });
+  </script>
+</body>
+</html>
