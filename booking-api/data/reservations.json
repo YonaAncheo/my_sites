@@ -3,8 +3,45 @@
     "id": 1,
     "hotel_id": 1,
     "hotel": "Hotel Estrella",
-    "cliente": "Juan Pérez",
+    "cliente": "Yonathan Ancheo",
+    "habitacion": "Suite",
     "fechaEntrada": "2025-06-15",
     "fechaSalida": "2025-06-17"
+  },
+  {
+    "id": 1750116852389,
+    "hotel_id": 1,
+    "hotel": "Hotel Estrella",
+    "cliente": "Yonathan",
+    "habitacion": "Doble",
+    "fechaEntrada": "2025-06-15",
+    "fechaSalida": "2025-06-17"
+  },
+  {
+    "id": 1750117553687,
+    "hotel_id": 2,
+    "hotel": "Hotel Sol",
+    "cliente": "Joan",
+    "habitacion": "Individual",
+    "fechaEntrada": "2025-07-17",
+    "fechaSalida": "2025-07-26"
+  },
+  {
+    "id": 1750117671938,
+    "hotel_id": 2,
+    "hotel": "Hotel Sol",
+    "cliente": "Yonathan",
+    "habitacion": "Individual",
+    "fechaEntrada": "2025-07-17",
+    "fechaSalida": "2025-07-26"
+  },
+  {
+    "id": 1750117829755,
+    "hotel_id": 2,
+    "hotel": "Hotel Sol",
+    "cliente": "Santiago",
+    "habitacion": "Individual",
+    "fechaEntrada": "2025-06-20",
+    "fechaSalida": "2025-06-27"
   }
 ]
